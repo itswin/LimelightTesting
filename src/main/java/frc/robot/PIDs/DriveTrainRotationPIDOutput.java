@@ -8,6 +8,7 @@
 package frc.robot.PIDs;
 
 import edu.wpi.first.wpilibj.PIDOutput;
+
 import frc.robot.Robot;
 
 /**
@@ -17,6 +18,6 @@ public class DriveTrainRotationPIDOutput implements PIDOutput {
 
     @Override
     public void pidWrite(double output) {
-        Robot.m_driveTrain.setInputAutoRotationSpeed(output);
+        // Robot.m_driveTrain.setInputAutoRotationSpeed(output);
     }
 }

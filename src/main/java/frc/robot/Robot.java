@@ -153,7 +153,7 @@ public class Robot extends TimedRobot {
         // strafe = strafe * strafe * Math.signum(strafe);
         rotation = rotation*rotation * Math.signum(rotation);
 
-        m_driveTrain.setInputJoystickSpeeds(speed, strafe, rotation);
+        m_driveTrain.setInputJoystickSpeeds(strafe, speed, rotation);
         break;
       case kAuto:
         // Speeds are set in the command currently controlling the drivetrain

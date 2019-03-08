@@ -17,6 +17,8 @@ public class DriveTrainSpeedPIDOutput implements PIDOutput {
 
     @Override
     public void pidWrite(double output) {
-        Robot.m_driveTrain.setInputAutoSpeed(output);
+        if(Robot.m_driveTrain != null) {
+            Robot.m_driveTrain.setInputAutoSpeed(output);
+        }
     }
 }

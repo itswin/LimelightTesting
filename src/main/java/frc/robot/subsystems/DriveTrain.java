@@ -55,7 +55,7 @@ public class DriveTrain extends Subsystem {
   private final double kVerticalAbsoluteTolerance = 10; // TODO: Change
   public PIDController verticalPIDController;
   public VerticalDistancePIDSource verticalDistancePIDSource;
-  public DriveTrainStrafePIDOutput speedPIDOutput;
+  public DriveTrainSpeedPIDOutput speedPIDOutput;
   
   // Joystick speeds updated in periodic
   private double inputJoystickSpeed = 0;
@@ -78,10 +78,10 @@ public class DriveTrain extends Subsystem {
   }
 
   public DriveTrain() {
-    frontLeft = new VictorSP(0);
-    frontRight = new VictorSP(1);
-    backLeft = new VictorSP(2);
-    backRight = new VictorSP(3);
+    frontLeft = new VictorSP(2);
+    frontRight = new VictorSP(3);
+    backLeft = new VictorSP(0);
+    backRight = new VictorSP(1);
 
     m_drive = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
 
@@ -93,6 +93,7 @@ public class DriveTrain extends Subsystem {
     rotationPIDController.enable();
 
     horizontalDistancePIDSource = new HorizontalDistancePIDSource();
+    strafePIDOutput = new DriveTrainStrafePIDOutput();
     horizontalPIDController = new PIDController(kHorizontalP, kHorizontalI, kHorizontalD, kHorizontalF, horizontalDistancePIDSource, strafePIDOutput, kHorizontalPeriod);
     horizontalPIDController.setOutputRange(-1, 1);
     horizontalPIDController.setInputRange(-100, 100); // TODO: Change
@@ -100,6 +101,7 @@ public class DriveTrain extends Subsystem {
     horizontalPIDController.disable();
 
     verticalDistancePIDSource = new VerticalDistancePIDSource();
+    speedPIDOutput = new DriveTrainSpeedPIDOutput();
     verticalPIDController = new PIDController(kVerticalP, kVerticalI, kVerticalD, kVerticalF, verticalDistancePIDSource, speedPIDOutput, kVerticalPeriod);
     verticalPIDController.setOutputRange(-.5, .5);
     verticalPIDController.setInputRange(-100, 100); // TODO: Change

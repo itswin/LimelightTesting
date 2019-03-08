@@ -17,6 +17,6 @@ public class DriveTrainStrafePIDOutput implements PIDOutput {
 
     @Override
     public void pidWrite(double output) {
-        Robot.m_driveTrain.setInputAutoStrafeSpeed(output);
+        // Robot.m_driveTrain.setInputAutoStrafeSpeed(output);
     }
 }
