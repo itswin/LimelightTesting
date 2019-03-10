@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -44,6 +44,9 @@ public class Robot extends TimedRobot {
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   public static DriveTrain m_driveTrain = new DriveTrain();
+  public static CenteringRotation m_cR = new CenteringRotation();
+  public static CenteringHorizontal m_cH = new CenteringHorizontal();
+  public static CenteringVertical m_cV = new CenteringVertical();
 
   /**
    * This function is run when the robot is first started up and should be
@@ -73,13 +76,17 @@ public class Robot extends TimedRobot {
     double contourArea = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
 
     // Horizontal
-    System.out.println(-xDisplacement / Math.sqrt(contourArea));
+    double error = -xDisplacement / Math.sqrt(contourArea);
+    double sign = Math.signum(error);
+    // System.out.println(sign * Math.sqrt(error * sign) - Robot.m_driveTrain.kHorizontalSetpoint);
+    // System.out.println(sign * Math.sqrt(error * sign));
 
     // Vertical
     // System.out.println(contourArea);
-    System.out.println(m_driveTrain.verticalPIDController.onTarget() + "\t" +
-          m_driveTrain.horizontalPIDController.onTarget());
+    // System.out.println(m_driveTrain.verticalPIDController.onTarget() + "\t" +
+    //       m_driveTrain.horizontalPIDController.onTarget());
     
+    // System.out.println(m_navX.isRotating() + " " + m_navX.getRate());
   }
 
   /**
@@ -187,35 +194,5 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    Scheduler.getInstance().run();
-
-    // Slow down rotation
-    double rotationScalar = .75;
-
-    double speed = -Robot.m_oi.driveController.getLeftYAxis();
-    double strafe = Robot.m_oi.driveController.getLeftXAxis();
-    double rotation = Robot.m_oi.driveController.getRightXAxis() * rotationScalar;
-    
-    // Square the values to make driving less sensitive
-    // speed = speed * speed * Math.signum(speed);
-    // strafe = strafe * strafe * Math.signum(strafe);
-    rotation = rotation*rotation * Math.signum(rotation);
-    
-    switch(m_driveTrain.driveState) {
-      case kManual:
-        // Sends joystick values to PIDDriveTrain
-        m_driveTrain.setInputJoystickSpeeds(speed, strafe, rotation);
-        break;
-      case kAuto:
-        // Speeds are set in the command currently controlling the drivetrain
-
-        // If joystick input, stop auto
-        if(speed != 0 || strafe != 0 || rotation != 0) {
-          m_driveTrain.driveState = DriveTrain.DriveState.kManual;
-        }
-        break;
-      default:
-        break;
-    }
   }
 }

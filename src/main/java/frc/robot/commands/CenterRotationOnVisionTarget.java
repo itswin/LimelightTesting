@@ -18,6 +18,7 @@ public class CenterRotationOnVisionTarget extends Command {
   public CenterRotationOnVisionTarget() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.m_cR);
   }
 
   // Called just before this Command runs the first time
@@ -51,7 +52,8 @@ public class CenterRotationOnVisionTarget extends Command {
   protected boolean isFinished() {
     // return Robot.m_driveTrain.LLrotationPIDController.onTarget() || Robot.m_driveTrain.driveState != DriveTrain.DriveState.kAuto;
     // return Robot.m_driveTrain.centeringPIDsOnTarget() || Robot.m_driveTrain.driveState != DriveTrain.DriveState.kAuto;
-    return isSetpointSet || Robot.m_driveTrain.driveState != DriveTrain.DriveState.kAuto;
+    boolean isTargetVisible = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0) == 1;
+    return isSetpointSet || Robot.m_driveTrain.driveState != DriveTrain.DriveState.kAuto || !isTargetVisible;
   }
 
   // Called once after isFinished returns true

@@ -30,20 +30,21 @@ public class DriveTrain extends Subsystem {
   // PIDs
   private final double kRotationP = .04;
   private final double kRotationI = 0.0001;
-  private final double kRotationD = 0;
+  private final double kRotationD = 0.2;
   private final double kRotationF = 0;
   private final double kRotationPeriod = .01;
   private final double kRotationAbsoluteTolerance = 2;
+  public static final double rotationThreshold = 1;
   public PIDController rotationPIDController;
   public DriveTrainRotationPIDOutput rotationPIDOutput;
 
-  private double kHorizontalP = .1;
-  private double kHorizontalI = 0.0005; //.0025
-  private double kHorizontalD = .5; // .35 .65
+  private double kHorizontalP = .15;
+  private double kHorizontalI = 0.00075; //.001
+  private double kHorizontalD = 1.5; // .5
   private double kHorizontalF = 0;
   private final double kHorizontalPeriod = 0.01;
   private final double kHorizontalAbsoluteTolerance = .5;
-  private final double kHorizontalSetpoint = -.92;
+  public static final double kHorizontalSetpoint = -.9; // -.43
   public PIDController horizontalPIDController;
   public HorizontalDistancePIDSource horizontalDistancePIDSource;
   public DriveTrainStrafePIDOutput strafePIDOutput;
@@ -123,10 +124,10 @@ public class DriveTrain extends Subsystem {
     horizontalDistancePIDSource = new HorizontalDistancePIDSource();
     strafePIDOutput = new DriveTrainStrafePIDOutput();
     horizontalPIDController = new PIDController(kHorizontalP, kHorizontalI, kHorizontalD, kHorizontalF, horizontalDistancePIDSource, strafePIDOutput, kHorizontalPeriod);
-    horizontalPIDController.setOutputRange(-1, 1);
+    horizontalPIDController.setOutputRange(-.4, .4);
     horizontalPIDController.setInputRange(-100, 100); // TODO: Change
     horizontalPIDController.setAbsoluteTolerance(kHorizontalAbsoluteTolerance);
-    horizontalPIDController.setSetpoint(kHorizontalSetpoint);
+    horizontalPIDController.setSetpoint(0);
     horizontalPIDController.disable();
 
     verticalDistancePIDSource = new VerticalDistancePIDSource();

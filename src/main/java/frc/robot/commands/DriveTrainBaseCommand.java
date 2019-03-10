@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.DriveTrain;
 
 public class DriveTrainBaseCommand extends Command {
   private boolean wasMoving;
@@ -61,12 +62,16 @@ public class DriveTrainBaseCommand extends Command {
     } else {
       // Reenables the PID if the robot was just manually being rotated and isn't anymore
       if(wasMoving) {
+        // Waits for the rotation momentum to stop
+        if(Math.abs(Robot.m_navX.getRate()) < DriveTrain.rotationThreshold) {
         wasMoving = false;
         Robot.m_driveTrain.rotationPIDController.setSetpoint(Robot.m_navX.getYaw());
         Robot.m_driveTrain.rotationPIDController.enable();
+        }
+      } else {
+        // Only give rotation correction if robot isn't rotating manually
+        inputRotationSpeed = Robot.m_driveTrain.getInputAutoRotationSpeed();
       }
-
-      inputRotationSpeed = Robot.m_driveTrain.getInputAutoRotationSpeed();
     }
     
     // Limit the rate you can change speed for all directions

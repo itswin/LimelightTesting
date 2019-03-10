@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveTrain;
@@ -15,6 +16,7 @@ public class CenterVerticallyOnVisionTarget extends Command {
   public CenterVerticallyOnVisionTarget() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.m_cV);
   }
 
   // Called just before this Command runs the first time
@@ -35,7 +37,8 @@ public class CenterVerticallyOnVisionTarget extends Command {
   protected boolean isFinished() {
     // return false;
     // return Robot.m_driveTrain.verticalPIDController.onTarget() || Robot.m_driveTrain.driveState != DriveTrain.DriveState.kAuto;
-    return Robot.m_driveTrain.centeringPIDsOnTarget() || Robot.m_driveTrain.driveState != DriveTrain.DriveState.kAuto;
+    boolean isTargetVisible = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0) == 1;
+    return Robot.m_driveTrain.centeringPIDsOnTarget() || Robot.m_driveTrain.driveState != DriveTrain.DriveState.kAuto || !isTargetVisible;
   }
 
   // Called once after isFinished returns true
