@@ -8,6 +8,7 @@
 package frc.robot;
 
 import frc.controllers.LogitechController;
+import frc.robot.commands.*;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -45,5 +46,10 @@ public class OI {
 
   public OI() {
     driveController = new LogitechController(0);
+
+    driveController.aButton.whenPressed(new CenterRotationOnVisionTarget());
+    driveController.bButton.whenPressed(new CenterHorizontallyOnVisionTarget());
+    driveController.yButton.whenPressed(new CenterVerticallyOnVisionTarget());
+    driveController.xButton.whenPressed(new StaggeredCenterOnVisionTarget());
   }
 }

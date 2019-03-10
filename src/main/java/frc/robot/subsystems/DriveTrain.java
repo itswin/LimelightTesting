@@ -28,8 +28,8 @@ public class DriveTrain extends Subsystem {
   private MecanumDrive m_drive;
 
   // PIDs
-  private final double kRotationP = .025;
-  private final double kRotationI = 0;
+  private final double kRotationP = .04;
+  private final double kRotationI = 0.0001;
   private final double kRotationD = 0;
   private final double kRotationF = 0;
   private final double kRotationPeriod = .01;
@@ -37,25 +37,42 @@ public class DriveTrain extends Subsystem {
   public PIDController rotationPIDController;
   public DriveTrainRotationPIDOutput rotationPIDOutput;
 
-  private final double kHorizontalP = 0;
-  private final double kHorizontalI = 0;
-  private final double kHorizontalD = 0;
-  private final double kHorizontalF = 0;
+  private double kHorizontalP = .1;
+  private double kHorizontalI = 0.0005; //.0025
+  private double kHorizontalD = .5; // .35 .65
+  private double kHorizontalF = 0;
   private final double kHorizontalPeriod = 0.01;
-  private final double kHorizontalAbsoluteTolerance = 10; // TODO: Change
+  private final double kHorizontalAbsoluteTolerance = .5;
+  private final double kHorizontalSetpoint = -.92;
   public PIDController horizontalPIDController;
   public HorizontalDistancePIDSource horizontalDistancePIDSource;
   public DriveTrainStrafePIDOutput strafePIDOutput;
 
-  private final double kVerticalP = 0;
-  private final double kVerticalI = 0;
-  private final double kVerticalD = 0;
+  private final double kVerticalP = 0.01;
+  private final double kVerticalI = 0.001;
+  private final double kVerticalD = .5;
   private final double kVerticalF = 0;
   private final double kVerticalPeriod = 0.01;
-  private final double kVerticalAbsoluteTolerance = 10; // TODO: Change
+  private final double kVerticalAbsoluteTolerance = 2;
+  public final static double kVerticalTarget = 11.25;
   public PIDController verticalPIDController;
   public VerticalDistancePIDSource verticalDistancePIDSource;
   public DriveTrainSpeedPIDOutput speedPIDOutput;
+  
+  // private final double kLLRotationP = 1;
+  // private final double kLLRotationI = 0.0175;
+  // private final double kLLRotationD = 0;
+  // private final double kLLRotationF = 0;
+  private final double kLLRotationP = 0;
+  private final double kLLRotationI = 0;
+  private final double kLLRotationD = 0;
+  private final double kLLRotationF = 0;
+  private final double kLLRotationPeriod = .01;
+  private final double kLLRotationAbsoluteTolerance = .1;
+  public PIDController LLrotationPIDController;
+  public RotationPIDSource LLrotationPIDSource;
+  public DriveTrainRotationPIDOutput LLrotationPIDOutput;
+  
   
   // Joystick speeds updated in periodic
   private double inputJoystickSpeed = 0;
@@ -84,29 +101,6 @@ public class DriveTrain extends Subsystem {
     backRight = new VictorSP(1);
 
     m_drive = new MecanumDrive(frontLeft, backLeft, frontRight, backRight);
-
-    rotationPIDOutput = new DriveTrainRotationPIDOutput();
-    rotationPIDController = new PIDController(kRotationP, kRotationI, kRotationD, kRotationF, Robot.m_navX, rotationPIDOutput, kRotationPeriod);
-    rotationPIDController.setOutputRange(-.25, .25);
-    rotationPIDController.setInputRange(-180, 180);
-    rotationPIDController.setAbsoluteTolerance(kRotationAbsoluteTolerance);
-    rotationPIDController.enable();
-
-    horizontalDistancePIDSource = new HorizontalDistancePIDSource();
-    strafePIDOutput = new DriveTrainStrafePIDOutput();
-    horizontalPIDController = new PIDController(kHorizontalP, kHorizontalI, kHorizontalD, kHorizontalF, horizontalDistancePIDSource, strafePIDOutput, kHorizontalPeriod);
-    horizontalPIDController.setOutputRange(-1, 1);
-    horizontalPIDController.setInputRange(-100, 100); // TODO: Change
-    horizontalPIDController.setAbsoluteTolerance(kHorizontalAbsoluteTolerance);
-    horizontalPIDController.disable();
-
-    verticalDistancePIDSource = new VerticalDistancePIDSource();
-    speedPIDOutput = new DriveTrainSpeedPIDOutput();
-    verticalPIDController = new PIDController(kVerticalP, kVerticalI, kVerticalD, kVerticalF, verticalDistancePIDSource, speedPIDOutput, kVerticalPeriod);
-    verticalPIDController.setOutputRange(-.5, .5);
-    verticalPIDController.setInputRange(-100, 100); // TODO: Change
-    verticalPIDController.setAbsoluteTolerance(kVerticalAbsoluteTolerance);
-    verticalPIDController.disable();
   }
 
   @Override
@@ -116,8 +110,50 @@ public class DriveTrain extends Subsystem {
     setDefaultCommand(new DriveTrainBaseCommand());
   }
 
+  // Needs to be done after DriveTrain is initialized
+  public void initPIDs() {
+    rotationPIDOutput = new DriveTrainRotationPIDOutput();
+    rotationPIDController = new PIDController(kRotationP, kRotationI, kRotationD, kRotationF, Robot.m_navX, rotationPIDOutput, kRotationPeriod);
+    rotationPIDController.setOutputRange(-.25, .25);
+    rotationPIDController.setInputRange(-180, 180);
+    rotationPIDController.setAbsoluteTolerance(kRotationAbsoluteTolerance);
+    rotationPIDController.setContinuous();
+    rotationPIDController.enable();
+
+    horizontalDistancePIDSource = new HorizontalDistancePIDSource();
+    strafePIDOutput = new DriveTrainStrafePIDOutput();
+    horizontalPIDController = new PIDController(kHorizontalP, kHorizontalI, kHorizontalD, kHorizontalF, horizontalDistancePIDSource, strafePIDOutput, kHorizontalPeriod);
+    horizontalPIDController.setOutputRange(-1, 1);
+    horizontalPIDController.setInputRange(-100, 100); // TODO: Change
+    horizontalPIDController.setAbsoluteTolerance(kHorizontalAbsoluteTolerance);
+    horizontalPIDController.setSetpoint(kHorizontalSetpoint);
+    horizontalPIDController.disable();
+
+    verticalDistancePIDSource = new VerticalDistancePIDSource();
+    speedPIDOutput = new DriveTrainSpeedPIDOutput();
+    verticalPIDController = new PIDController(kVerticalP, kVerticalI, kVerticalD, kVerticalF, verticalDistancePIDSource, speedPIDOutput, kVerticalPeriod);
+    verticalPIDController.setOutputRange(-.25, .25);
+    verticalPIDController.setInputRange(-100, 100); // TODO: Change
+    verticalPIDController.setAbsoluteTolerance(kVerticalAbsoluteTolerance);
+    verticalPIDController.setSetpoint(0);
+    verticalPIDController.disable();
+    
+    LLrotationPIDOutput = new DriveTrainRotationPIDOutput();
+    LLrotationPIDSource = new RotationPIDSource();
+    LLrotationPIDController = new PIDController(kLLRotationP, kLLRotationI, kLLRotationD, kLLRotationF, LLrotationPIDSource, LLrotationPIDOutput, kLLRotationPeriod);
+    LLrotationPIDController.setOutputRange(-.25, .25);
+    LLrotationPIDController.setInputRange(-10, 10);
+    LLrotationPIDController.setAbsoluteTolerance(kLLRotationAbsoluteTolerance);
+    LLrotationPIDController.setSetpoint(0);
+    LLrotationPIDController.disable();
+  }
+
   public void drive(double speed, double strafe, double rotation) {
-    m_drive.driveCartesian(speed, strafe, rotation);
+    m_drive.driveCartesian(strafe, speed, rotation);
+  }
+  
+  public void drive(double speed, double strafe, double rotation, double angle) {
+    m_drive.driveCartesian(strafe, speed, rotation, angle);
   }
 
   public void stop() {
@@ -211,10 +247,16 @@ public class DriveTrain extends Subsystem {
   public void enableCenteringPIDs() {
     verticalPIDController.enable();
     horizontalPIDController.enable();
+    LLrotationPIDController.enable();
   }
 
   public void disableCenteringPIDs() {
     verticalPIDController.disable();
     horizontalPIDController.disable();
+    LLrotationPIDController.disable();
+  }
+
+  public boolean centeringPIDsOnTarget() {
+    return verticalPIDController.onTarget() && horizontalPIDController.onTarget() && LLrotationPIDController.onTarget();
   }
 }

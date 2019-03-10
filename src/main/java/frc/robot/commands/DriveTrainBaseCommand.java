@@ -62,7 +62,7 @@ public class DriveTrainBaseCommand extends Command {
       // Reenables the PID if the robot was just manually being rotated and isn't anymore
       if(wasMoving) {
         wasMoving = false;
-        Robot.m_driveTrain.rotationPIDController.setSetpoint(Robot.m_navX.getAngle());
+        Robot.m_driveTrain.rotationPIDController.setSetpoint(Robot.m_navX.getYaw());
         Robot.m_driveTrain.rotationPIDController.enable();
       }
 
@@ -101,7 +101,7 @@ public class DriveTrainBaseCommand extends Command {
     Robot.m_driveTrain.drive(Robot.m_driveTrain.getCurrentSpeed(), Robot.m_driveTrain.getCurrentStrafeSpeed(), Robot.m_driveTrain.getCurrentRotationSpeed());
 
     // Field oriented driving
-    // Robot.m_pidDriveTrain.drive(Robot.m_pidDriveTrain.getCurrentSpeed(), Robot.m_pidDriveTrain.getCurrentStrafeSpeed(), Robot.m_pidDriveTrain.getCurrentRotationSpeed(), -Robot.m_navX.getAngle());
+    // Robot.m_driveTrain.drive(Robot.m_driveTrain.getCurrentSpeed(), Robot.m_driveTrain.getCurrentStrafeSpeed(), Robot.m_driveTrain.getCurrentRotationSpeed(), -Robot.m_navX.getAngle());
   }
 
   // Make this return true when this Command no longer needs to run execute()

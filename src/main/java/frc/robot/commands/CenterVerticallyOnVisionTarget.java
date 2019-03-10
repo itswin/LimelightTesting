@@ -9,11 +9,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.DriveTrain;
 
-public class CenterOnVisionTarget extends Command {
-
-public CenterOnVisionTarget() {
+public class CenterVerticallyOnVisionTarget extends Command {
+  public CenterVerticallyOnVisionTarget() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
   }
@@ -21,8 +20,9 @@ public CenterOnVisionTarget() {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    System.out.println("Centering vertically");
     Robot.m_driveTrain.driveState = DriveTrain.DriveState.kAuto;
-    Robot.m_driveTrain.enableCenteringPIDs();
+    Robot.m_driveTrain.verticalPIDController.enable();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -33,21 +33,25 @@ public CenterOnVisionTarget() {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.m_driveTrain.horizontalPIDController.onTarget() && Robot.m_driveTrain.verticalPIDController.onTarget();
+    // return false;
+    // return Robot.m_driveTrain.verticalPIDController.onTarget() || Robot.m_driveTrain.driveState != DriveTrain.DriveState.kAuto;
+    return Robot.m_driveTrain.centeringPIDsOnTarget() || Robot.m_driveTrain.driveState != DriveTrain.DriveState.kAuto;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    System.out.println("Finished centering vertically");
     Robot.m_driveTrain.driveState = DriveTrain.DriveState.kManual;
-    Robot.m_driveTrain.disableCenteringPIDs();
+    Robot.m_driveTrain.verticalPIDController.reset();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    System.out.println("Centering vertically interrupted");
     Robot.m_driveTrain.driveState = DriveTrain.DriveState.kManual;
-    Robot.m_driveTrain.disableCenteringPIDs();
+    Robot.m_driveTrain.verticalPIDController.reset();
   }
 }

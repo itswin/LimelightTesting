@@ -5,18 +5,17 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.PIDs;
+package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.PIDOutput;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 
-/**
- * Add your docs here.
- */
-public class DriveTrainSpeedPIDOutput implements PIDOutput {
-
-    @Override
-    public void pidWrite(double output) {
-        Robot.m_driveTrain.setInputAutoSpeed(output);
-    }
+public class DelayedCenterVerticallyOnVisionTarget extends CommandGroup {
+  /**
+   * Add your docs here.
+   */
+  public DelayedCenterVerticallyOnVisionTarget(double time) {
+    addSequential(new WaitCommand(time));
+    addSequential(new CenterVerticallyOnVisionTarget());
+  }
 }

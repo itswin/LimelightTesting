@@ -9,6 +9,7 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -54,6 +55,8 @@ public class Robot extends TimedRobot {
     // m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
+
+    m_driveTrain.initPIDs();
   }
 
   /**
@@ -66,6 +69,17 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    double xDisplacement = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+    double contourArea = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
+
+    // Horizontal
+    System.out.println(-xDisplacement / Math.sqrt(contourArea));
+
+    // Vertical
+    // System.out.println(contourArea);
+    System.out.println(m_driveTrain.verticalPIDController.onTarget() + "\t" +
+          m_driveTrain.horizontalPIDController.onTarget());
+    
   }
 
   /**
@@ -128,7 +142,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     
-    m_driveTrain.rotationPIDController.setSetpoint(m_navX.getAngle());
+    m_driveTrain.rotationPIDController.setSetpoint(m_navX.getYaw());
   }
 
   /**
@@ -137,26 +151,31 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+
+    // Slow down rotation
+    double rotationScalar = .75;
+
+    double speed = -Robot.m_oi.driveController.getLeftYAxis();
+    double strafe = Robot.m_oi.driveController.getLeftXAxis();
+    double rotation = Robot.m_oi.driveController.getRightXAxis() * rotationScalar;
+    
+    // Square the values to make driving less sensitive
+    // speed = speed * speed * Math.signum(speed);
+    // strafe = strafe * strafe * Math.signum(strafe);
+    rotation = rotation*rotation * Math.signum(rotation);
     
     switch(m_driveTrain.driveState) {
       case kManual:
         // Sends joystick values to PIDDriveTrain
-        // Slow down rotation
-        double rotationScalar = .75;
-
-        double speed = -Robot.m_oi.driveController.getLeftYAxis();
-        double strafe = Robot.m_oi.driveController.getLeftXAxis();
-        double rotation = Robot.m_oi.driveController.getRightXAxis() * rotationScalar;
-        
-        // Square the values to make driving less sensitive
-        // speed = speed * speed * Math.signum(speed);
-        // strafe = strafe * strafe * Math.signum(strafe);
-        rotation = rotation*rotation * Math.signum(rotation);
-
-        m_driveTrain.setInputJoystickSpeeds(strafe, speed, rotation);
+        m_driveTrain.setInputJoystickSpeeds(speed, strafe, rotation);
         break;
       case kAuto:
         // Speeds are set in the command currently controlling the drivetrain
+
+        // If joystick input, stop auto
+        if(speed != 0 || strafe != 0 || rotation != 0) {
+          m_driveTrain.driveState = DriveTrain.DriveState.kManual;
+        }
         break;
       default:
         break;
@@ -168,5 +187,35 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    Scheduler.getInstance().run();
+
+    // Slow down rotation
+    double rotationScalar = .75;
+
+    double speed = -Robot.m_oi.driveController.getLeftYAxis();
+    double strafe = Robot.m_oi.driveController.getLeftXAxis();
+    double rotation = Robot.m_oi.driveController.getRightXAxis() * rotationScalar;
+    
+    // Square the values to make driving less sensitive
+    // speed = speed * speed * Math.signum(speed);
+    // strafe = strafe * strafe * Math.signum(strafe);
+    rotation = rotation*rotation * Math.signum(rotation);
+    
+    switch(m_driveTrain.driveState) {
+      case kManual:
+        // Sends joystick values to PIDDriveTrain
+        m_driveTrain.setInputJoystickSpeeds(speed, strafe, rotation);
+        break;
+      case kAuto:
+        // Speeds are set in the command currently controlling the drivetrain
+
+        // If joystick input, stop auto
+        if(speed != 0 || strafe != 0 || rotation != 0) {
+          m_driveTrain.driveState = DriveTrain.DriveState.kManual;
+        }
+        break;
+      default:
+        break;
+    }
   }
 }

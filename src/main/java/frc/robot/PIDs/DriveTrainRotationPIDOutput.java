@@ -18,6 +18,6 @@ public class DriveTrainRotationPIDOutput implements PIDOutput {
 
     @Override
     public void pidWrite(double output) {
-        // Robot.m_driveTrain.setInputAutoRotationSpeed(output);
+        Robot.m_driveTrain.setInputAutoRotationSpeed(output);
     }
 }
