@@ -10,7 +10,7 @@ package frc.robot.PIDs;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import frc.robot.Robot;
+import frc.robot.subsystems.DriveTrain;
 
 /**
  * Grabs vertical displacement from limelight network tables
@@ -36,6 +36,6 @@ public class VerticalDistancePIDSource implements PIDSource {
     public double pidGet() {
         double contourArea = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ta").getDouble(0);
 
-        return contourArea - Robot.m_driveTrain.kVerticalTarget;
+        return contourArea - DriveTrain.kVerticalTarget;
 	}
 }

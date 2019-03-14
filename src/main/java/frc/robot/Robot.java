@@ -60,6 +60,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto mode", m_chooser);
 
     m_driveTrain.initPIDs();
+    m_navX.reset();
+    m_driveTrain.zeroAngle = 0;
   }
 
   /**
@@ -86,7 +88,7 @@ public class Robot extends TimedRobot {
     // System.out.println(m_driveTrain.verticalPIDController.onTarget() + "\t" +
     //       m_driveTrain.horizontalPIDController.onTarget());
     
-    // System.out.println(m_navX.isRotating() + " " + m_navX.getRate());
+    // System.out.println(m_navX.getYaw());
   }
 
   /**
@@ -149,7 +151,9 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     
-    m_driveTrain.rotationPIDController.setSetpoint(m_navX.getYaw());
+    // m_navX.reset();
+    // m_driveTrain.zeroAngle = 0;
+    m_driveTrain.rotationPIDController.setSetpoint(getComparedYaw());
   }
 
   /**
@@ -194,5 +198,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+  }
+
+  public static double getComparedYaw() {
+    return (m_navX.getYaw() - m_driveTrain.zeroAngle) % 180;
   }
 }

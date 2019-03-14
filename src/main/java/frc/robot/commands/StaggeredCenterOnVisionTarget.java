@@ -8,15 +8,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.WaitCommand;
 
 public class StaggeredCenterOnVisionTarget extends CommandGroup {
   /**
    * Add your docs here.
    */
   public StaggeredCenterOnVisionTarget() {
-    addParallel(new CenterRotationOnVisionTarget());
+    // addParallel(new CenterRotationOnVisionTarget());
+    addParallel(new GoToClosestScoringAngle());
     addParallel(new DelayedCenterHorizontallyOnVisionTarget());
-    addSequential(new DelayedCenterVerticallyOnVisionTarget(1.5));
+    addSequential(new DelayedCenterVerticallyOnVisionTarget());
   }
 }

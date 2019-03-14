@@ -11,7 +11,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 
-import frc.robot.Robot;
+import frc.robot.subsystems.DriveTrain;
 /**
  * Grabs horizontal displacement from limelight network tables
  */
@@ -46,6 +46,6 @@ public class HorizontalDistancePIDSource implements PIDSource {
         // System.out.println("Horizontal Source: " + -xDisplacement / contourArea);
         // Smaller movements at a closer distance (when the contour is larger)
         // Square root to be less sensitive
-        return sign * Math.sqrt(error * sign) - Robot.m_driveTrain.kHorizontalSetpoint;
+        return sign * Math.sqrt(error * sign) - DriveTrain.kHorizontalSetpoint;
 	}
 }

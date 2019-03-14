@@ -7,16 +7,25 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 
-public class DelayedCenterVerticallyOnVisionTarget extends CommandGroup {
+/**
+ * Add your docs here.
+ */
+public class GoToClosestScoringAngle extends InstantCommand {
   /**
    * Add your docs here.
    */
+  public GoToClosestScoringAngle() {
+    super();
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
+  }
 
-  public DelayedCenterVerticallyOnVisionTarget() {
-    addSequential(new WaitForRotation());
-    addSequential(new WaitForHorizontal());
-    addSequential(new CenterVerticallyOnVisionTarget());
+  // Called once when the command executes
+  @Override
+  protected void initialize() {
+    Robot.m_driveTrain.rotationPIDController.setSetpoint(Robot.m_driveTrain.getClosestScoringAngle() - Robot.m_driveTrain.zeroAngle);
   }
 }

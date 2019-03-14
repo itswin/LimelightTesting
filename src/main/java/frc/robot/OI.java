@@ -42,7 +42,7 @@ public class OI {
   // Start the command when the button is released and let it run the command
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
-  public static LogitechController driveController;
+  public LogitechController driveController;
 
   public OI() {
     driveController = new LogitechController(0);
@@ -51,5 +51,10 @@ public class OI {
     driveController.bButton.whenPressed(new CenterHorizontallyOnVisionTarget());
     driveController.yButton.whenPressed(new CenterVerticallyOnVisionTarget());
     driveController.xButton.whenPressed(new StaggeredCenterOnVisionTarget());
+
+    driveController.backButton.whenPressed(new GoToClosestScoringAngle());
+
+    driveController.rightJoystickButton.whenPressed(new RealignGyro());
+    driveController.leftJoystickButton.whenPressed(new ResetNavX());
   }
 }

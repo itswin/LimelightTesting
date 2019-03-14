@@ -7,16 +7,28 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 
-public class DelayedCenterVerticallyOnVisionTarget extends CommandGroup {
+/**
+ * Add your docs here.
+ */
+public class ResetNavX extends InstantCommand {
   /**
    * Add your docs here.
    */
-
-  public DelayedCenterVerticallyOnVisionTarget() {
-    addSequential(new WaitForRotation());
-    addSequential(new WaitForHorizontal());
-    addSequential(new CenterVerticallyOnVisionTarget());
+  public ResetNavX() {
+    super();
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
   }
+
+  // Called once when the command executes
+  @Override
+  protected void initialize() {
+    Robot.m_navX.reset();
+    Robot.m_driveTrain.zeroAngle = 0;
+    Robot.m_driveTrain.rotationPIDController.setSetpoint(Robot.getComparedYaw());
+  }
+
 }

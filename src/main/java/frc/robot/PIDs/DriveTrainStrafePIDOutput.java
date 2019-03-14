@@ -14,9 +14,16 @@ import frc.robot.Robot;
  * Add your docs here.
  */
 public class DriveTrainStrafePIDOutput implements PIDOutput {
+    private double threshold = .05;
 
     @Override
     public void pidWrite(double output) {
-        Robot.m_driveTrain.setInputAutoStrafeSpeed(output);
+        double sign = Math.signum(output);
+        if(Math.abs(output) < threshold) {
+            sign = 0;
+        }
+        
+        Robot.m_driveTrain.setInputAutoStrafeSpeed(sign * Robot.m_driveTrain.kHorizontalBaseline + output);
+        System.out.println(sign * Robot.m_driveTrain.kHorizontalBaseline + output);
     }
 }

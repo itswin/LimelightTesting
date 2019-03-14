@@ -7,16 +7,27 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 
-public class DelayedCenterVerticallyOnVisionTarget extends CommandGroup {
+/**
+ * Add your docs here.
+ */
+public class EnableRotationPID extends InstantCommand {
   /**
    * Add your docs here.
    */
-
-  public DelayedCenterVerticallyOnVisionTarget() {
-    addSequential(new WaitForRotation());
-    addSequential(new WaitForHorizontal());
-    addSequential(new CenterVerticallyOnVisionTarget());
+  public EnableRotationPID() {
+    super();
+    // Use requires() here to declare subsystem dependencies
+    // eg. requires(chassis);
   }
+
+  // Called once when the command executes
+  @Override
+  protected void initialize() {
+    Robot.m_driveTrain.rotationPIDController.reset();
+    Robot.m_driveTrain.rotationPIDController.enable();
+  }
+
 }

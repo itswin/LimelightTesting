@@ -27,21 +27,34 @@ public class DriveTrain extends Subsystem {
 
   private MecanumDrive m_drive;
 
+  // Hatches and cargo are placed at fixed angles
+  public static final double[] kScoringAngles = {-151.25, -90, -28.75, 0, 28.75, 90, 151.25, 180};
+  public double zeroAngle = 0;
+
   // PIDs
-  private final double kRotationP = .04;
+  private final double kRotationP = .05;
   private final double kRotationI = 0.0001;
   private final double kRotationD = 0.2;
   private final double kRotationF = 0;
   private final double kRotationPeriod = .01;
   private final double kRotationAbsoluteTolerance = 2;
-  public static final double rotationThreshold = 1;
+  public static final double rotationThreshold = .5;
   public PIDController rotationPIDController;
   public DriveTrainRotationPIDOutput rotationPIDOutput;
 
-  private double kHorizontalP = .15;
-  private double kHorizontalI = 0.00075; //.001
-  private double kHorizontalD = 1.5; // .5
+  public final double kHorizontalBaseline = .15;
+  // private double kHorizontalP = .15;
+  // private double kHorizontalI = 0.00075; //.001
+  // private double kHorizontalD = 1.5; // .5
+  // private double kHorizontalF = 0;
+  // private double kHorizontalMax = .4;
+  // private double kHorizontalMin = -.4;
+  private double kHorizontalP = .1;
+  private double kHorizontalI = 0.00075;
+  private double kHorizontalD = 1;
   private double kHorizontalF = 0;
+  private double kHorizontalMax = .3;
+  private double kHorizontalMin = -.3;
   private final double kHorizontalPeriod = 0.01;
   private final double kHorizontalAbsoluteTolerance = .5;
   public static final double kHorizontalSetpoint = -.9; // -.43
@@ -124,7 +137,7 @@ public class DriveTrain extends Subsystem {
     horizontalDistancePIDSource = new HorizontalDistancePIDSource();
     strafePIDOutput = new DriveTrainStrafePIDOutput();
     horizontalPIDController = new PIDController(kHorizontalP, kHorizontalI, kHorizontalD, kHorizontalF, horizontalDistancePIDSource, strafePIDOutput, kHorizontalPeriod);
-    horizontalPIDController.setOutputRange(-.4, .4);
+    horizontalPIDController.setOutputRange(kHorizontalMin, kHorizontalMax);
     horizontalPIDController.setInputRange(-100, 100); // TODO: Change
     horizontalPIDController.setAbsoluteTolerance(kHorizontalAbsoluteTolerance);
     horizontalPIDController.setSetpoint(0);
@@ -158,11 +171,10 @@ public class DriveTrain extends Subsystem {
   }
 
   public void stop() {
-    rotationPIDController.setSetpoint(Robot.m_navX.getYaw());
+    rotationPIDController.setSetpoint(Robot.getComparedYaw());
 
     drive(0, 0, 0);
   }
-
   
   // ********** Methods so that updating inputs work from periodic ********** //
   public void setInputJoystickSpeeds(double speed, double strafe, double rotation) {
@@ -259,5 +271,21 @@ public class DriveTrain extends Subsystem {
 
   public boolean centeringPIDsOnTarget() {
     return verticalPIDController.onTarget() && horizontalPIDController.onTarget() && LLrotationPIDController.onTarget();
+  }
+  
+  public double getClosestScoringAngle() {
+    double currentAngle = Robot.m_navX.getYaw();
+
+    int index = 0;
+    double difference = 1000; // Big starting number guarantees first loop will store a new difference
+    for(int i = 0; i < DriveTrain.kScoringAngles.length; i++) {
+      if(Math.abs(DriveTrain.kScoringAngles[i] - currentAngle) < difference) {
+        index = i;
+        difference = Math.abs(DriveTrain.kScoringAngles[i] - currentAngle);
+      }
+    }
+
+    System.out.println(DriveTrain.kScoringAngles[index]);
+    return DriveTrain.kScoringAngles[index];
   }
 }

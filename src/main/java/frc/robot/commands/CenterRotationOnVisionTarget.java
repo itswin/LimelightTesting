@@ -42,7 +42,7 @@ public class CenterRotationOnVisionTarget extends Command {
     deltaSetpoint = camTran[4];
 
     if(deltaSetpoint != Double.NaN && Robot.m_driveTrain.rotationPIDController.onTarget()) {
-      Robot.m_driveTrain.rotationPIDController.setSetpoint((Robot.m_navX.getYaw() + deltaSetpoint) % 180);
+      Robot.m_driveTrain.rotationPIDController.setSetpoint((Robot.getComparedYaw() + deltaSetpoint) % 180);
       isSetpointSet = true;
     }
   }

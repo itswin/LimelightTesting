@@ -10,7 +10,6 @@ package frc.robot.PIDs;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
-import frc.robot.Robot;
 
 /**
  * Add your docs here.

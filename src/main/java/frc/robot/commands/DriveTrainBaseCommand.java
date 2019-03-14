@@ -27,8 +27,6 @@ public class DriveTrainBaseCommand extends Command {
   @Override
   protected void initialize() {
     wasMoving = false;
-    Robot.m_driveTrain.rotationPIDController.setSetpoint(Robot.m_navX.getAngle());
-    Robot.m_driveTrain.rotationPIDController.enable();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -65,7 +63,7 @@ public class DriveTrainBaseCommand extends Command {
         // Waits for the rotation momentum to stop
         if(Math.abs(Robot.m_navX.getRate()) < DriveTrain.rotationThreshold) {
         wasMoving = false;
-        Robot.m_driveTrain.rotationPIDController.setSetpoint(Robot.m_navX.getYaw());
+        Robot.m_driveTrain.rotationPIDController.setSetpoint(Robot.getComparedYaw());
         Robot.m_driveTrain.rotationPIDController.enable();
         }
       } else {
