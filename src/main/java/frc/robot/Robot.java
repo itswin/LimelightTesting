@@ -9,6 +9,8 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -62,6 +64,13 @@ public class Robot extends TimedRobot {
     m_driveTrain.initPIDs();
     m_navX.reset();
     m_driveTrain.zeroAngle = 0;
+    // NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+    
+    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+    camera.setResolution(320,240);
+    camera.setExposureManual(5);
+    camera.setFPS(20);
   }
 
   /**
@@ -164,7 +173,7 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
 
     // Slow down rotation
-    double rotationScalar = .75;
+    double rotationScalar = .5;
 
     double speed = -Robot.m_oi.driveController.getLeftYAxis();
     double strafe = Robot.m_oi.driveController.getLeftXAxis();
@@ -173,7 +182,7 @@ public class Robot extends TimedRobot {
     // Square the values to make driving less sensitive
     // speed = speed * speed * Math.signum(speed);
     // strafe = strafe * strafe * Math.signum(strafe);
-    rotation = rotation*rotation * Math.signum(rotation);
+    // rotation = rotation*rotation * Math.signum(rotation);
     
     switch(m_driveTrain.driveState) {
       case kManual:
@@ -188,6 +197,8 @@ public class Robot extends TimedRobot {
           m_driveTrain.driveState = DriveTrain.DriveState.kManual;
         }
         break;
+      case kAutoHorizontal:
+        m_driveTrain.setInputJoystickSpeeds(speed, 0, rotation);
       default:
         break;
     }

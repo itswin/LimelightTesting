@@ -54,7 +54,10 @@ public class OI {
 
     driveController.backButton.whenPressed(new GoToClosestScoringAngle());
 
-    driveController.rightJoystickButton.whenPressed(new RealignGyro());
+    // driveController.rightJoystickButton.whenPressed(new RealignGyro());
     driveController.leftJoystickButton.whenPressed(new ResetNavX());
+
+    driveController.rightJoystickButton.whileHeld(new LineUpWhileDriving());
+    driveController.rightJoystickButton.whenReleased(new CancelLineupAndTurnOffLEDs());
   }
 }

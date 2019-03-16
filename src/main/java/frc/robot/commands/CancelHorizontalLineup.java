@@ -13,20 +13,20 @@ import frc.robot.Robot;
 /**
  * Add your docs here.
  */
-public class EnableRotationPID extends InstantCommand {
+public class CancelHorizontalLineup extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public EnableRotationPID() {
+  public CancelHorizontalLineup() {
     super();
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(Robot.m_cH);
   }
 
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_driveTrain.rotationPIDController.enable();
   }
 
 }

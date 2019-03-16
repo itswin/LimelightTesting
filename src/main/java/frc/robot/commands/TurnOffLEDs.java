@@ -7,17 +7,17 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.command.InstantCommand;
-import frc.robot.Robot;
 
 /**
  * Add your docs here.
  */
-public class EnableRotationPID extends InstantCommand {
+public class TurnOffLEDs extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public EnableRotationPID() {
+  public TurnOffLEDs() {
     super();
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -26,7 +26,7 @@ public class EnableRotationPID extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
-    Robot.m_driveTrain.rotationPIDController.enable();
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
   }
 
 }

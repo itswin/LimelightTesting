@@ -9,11 +9,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class RealignGyro extends CommandGroup {
+public class CancelLineupAndTurnOffLEDs extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public RealignGyro() {
+  public CancelLineupAndTurnOffLEDs() {
     // Add Commands here:
     // e.g. addSequential(new Command1());
     // addSequential(new Command2());
@@ -30,8 +30,7 @@ public class RealignGyro extends CommandGroup {
     // e.g. if Command1 requires chassis, and Command2 requires arm,
     // a CommandGroup containing them would require both the chassis and the
     // arm.
-    addSequential(new ResetRotationPID());
-    addSequential(new ResetToClosestScoringAngle());
-    addSequential(new EnableRotationPID());
+    addSequential(new CancelHorizontalLineup());
+    addSequential(new TurnOffLEDs());
   }
 }

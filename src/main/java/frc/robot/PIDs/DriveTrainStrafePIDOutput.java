@@ -19,10 +19,12 @@ public class DriveTrainStrafePIDOutput implements PIDOutput {
     @Override
     public void pidWrite(double output) {
         double sign = Math.signum(output);
+        // Don't let the robot jiter (quick changes from -.2 to .2)
         if(Math.abs(output) < threshold) {
             sign = 0;
+            output = 0;
         }
-        
+
         Robot.m_driveTrain.setInputAutoStrafeSpeed(sign * Robot.m_driveTrain.kHorizontalBaseline + output);
         System.out.println(sign * Robot.m_driveTrain.kHorizontalBaseline + output);
     }

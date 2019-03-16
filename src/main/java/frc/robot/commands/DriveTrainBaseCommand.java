@@ -15,7 +15,7 @@ public class DriveTrainBaseCommand extends Command {
   private boolean wasMoving;
   private final double kMaxSpeedDeltaPerLoop = .1;
 
-  private final boolean rampRateEnabled = false;
+  private final boolean rampRateEnabled = true;
 
   public DriveTrainBaseCommand() {
     // Use requires() here to declare subsystem dependencies
@@ -45,6 +45,10 @@ public class DriveTrainBaseCommand extends Command {
         inputSpeed = Robot.m_driveTrain.getInputAutoSpeed();
         inputStrafeSpeed = Robot.m_driveTrain.getInputAutoStrafeSpeed();
         break;
+      case kAutoHorizontal:
+        inputStrafeSpeed = Robot.m_driveTrain.getInputAutoStrafeSpeed();
+        inputSpeed = Robot.m_driveTrain.getInputJoystickSpeed();
+        break;
     }
 
     double currentSpeed = Robot.m_driveTrain.getCurrentSpeed();
@@ -57,19 +61,17 @@ public class DriveTrainBaseCommand extends Command {
         wasMoving = true;
         Robot.m_driveTrain.rotationPIDController.disable();
       }
-    } else {
+    } else if(wasMoving) {
       // Reenables the PID if the robot was just manually being rotated and isn't anymore
-      if(wasMoving) {
-        // Waits for the rotation momentum to stop
-        if(Math.abs(Robot.m_navX.getRate()) < DriveTrain.rotationThreshold) {
+      // Waits for the rotation momentum to stop
+      if(Math.abs(Robot.m_navX.getRate()) < DriveTrain.rotationThreshold) {
         wasMoving = false;
         Robot.m_driveTrain.rotationPIDController.setSetpoint(Robot.getComparedYaw());
         Robot.m_driveTrain.rotationPIDController.enable();
-        }
-      } else {
-        // Only give rotation correction if robot isn't rotating manually
-        inputRotationSpeed = Robot.m_driveTrain.getInputAutoRotationSpeed();
       }
+    } else {
+      // Only give rotation correction if robot isn't rotating manually
+      inputRotationSpeed = Robot.m_driveTrain.getInputAutoRotationSpeed();
     }
     
     // Limit the rate you can change speed for all directions
@@ -104,7 +106,7 @@ public class DriveTrainBaseCommand extends Command {
     Robot.m_driveTrain.drive(Robot.m_driveTrain.getCurrentSpeed(), Robot.m_driveTrain.getCurrentStrafeSpeed(), Robot.m_driveTrain.getCurrentRotationSpeed());
 
     // Field oriented driving
-    // Robot.m_driveTrain.drive(Robot.m_driveTrain.getCurrentSpeed(), Robot.m_driveTrain.getCurrentStrafeSpeed(), Robot.m_driveTrain.getCurrentRotationSpeed(), -Robot.m_navX.getAngle());
+    // Robot.m_driveTrain.drive(Robot.m_driveTrain.getCurrentSpeed(), Robot.m_driveTrain.getCurrentStrafeSpeed(), Robot.m_driveTrain.getCurrentRotationSpeed(), -Robot.m_navX.getYaw());
   }
 
   // Make this return true when this Command no longer needs to run execute()

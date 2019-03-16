@@ -49,9 +49,9 @@ public class DriveTrain extends Subsystem {
   // private double kHorizontalF = 0;
   // private double kHorizontalMax = .4;
   // private double kHorizontalMin = -.4;
-  private double kHorizontalP = .1;
+  private double kHorizontalP = .15;
   private double kHorizontalI = 0.00075;
-  private double kHorizontalD = 1;
+  private double kHorizontalD = 20;
   private double kHorizontalF = 0;
   private double kHorizontalMax = .3;
   private double kHorizontalMin = -.3;
@@ -105,7 +105,7 @@ public class DriveTrain extends Subsystem {
 
   public DriveState driveState = DriveState.kManual;
   public enum DriveState {
-    kAuto, kManual
+    kAuto, kManual, kAutoHorizontal
   }
 
   public DriveTrain() {
