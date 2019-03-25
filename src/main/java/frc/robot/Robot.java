@@ -12,8 +12,10 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -98,6 +100,8 @@ public class Robot extends TimedRobot {
     //       m_driveTrain.horizontalPIDController.onTarget());
     
     // System.out.println(m_navX.getYaw());
+    NetworkTableInstance.getDefault().getTable("RobotData").getEntry("batteryVoltage").setNumber(RobotController.getBatteryVoltage());
+    NetworkTableInstance.getDefault().getTable("RobotData").getEntry("robotTime").setNumber(Timer.getFPGATimestamp());
   }
 
   /**

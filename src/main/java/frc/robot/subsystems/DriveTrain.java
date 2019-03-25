@@ -57,7 +57,7 @@ public class DriveTrain extends Subsystem {
   private double kHorizontalMin = -.3;
   private final double kHorizontalPeriod = 0.01;
   private final double kHorizontalAbsoluteTolerance = .5;
-  public static final double kHorizontalSetpoint = -.9; // -.43
+  public static final double kHorizontalSetpoint = -.9;
   public PIDController horizontalPIDController;
   public HorizontalDistancePIDSource horizontalDistancePIDSource;
   public DriveTrainStrafePIDOutput strafePIDOutput;

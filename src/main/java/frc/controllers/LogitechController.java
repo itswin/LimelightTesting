@@ -26,10 +26,10 @@ public class LogitechController {
     public JoystickButton startButton;
     public JoystickButton leftJoystickButton;
     public JoystickButton rightJoystickButton;
-    public POVButton povDownButton;
-    public POVButton povRightButton;
-    public POVButton povUpButton;
-    public POVButton povLeftButton;
+    public POVMultiButton povDownButton;
+    public POVMultiButton povRightButton;
+    public POVMultiButton povUpButton;
+    public POVMultiButton povLeftButton;
 
     public LogitechController(int port) {
         m_stick = new Joystick(port);
@@ -44,10 +44,10 @@ public class LogitechController {
         startButton = new JoystickButton(m_stick, 8);
         leftJoystickButton = new JoystickButton(m_stick, 9);
         rightJoystickButton = new JoystickButton(m_stick, 10);
-        povDownButton = new POVButton(m_stick, 180, 0);
-        povRightButton = new POVButton(m_stick, 90, 0);
-        povUpButton = new POVButton(m_stick, 0, 0);
-        povLeftButton = new POVButton(m_stick, 270, 0);
+        povDownButton = new POVMultiButton(m_stick, 180, 0);
+        povRightButton = new POVMultiButton(m_stick, 90, 0);
+        povUpButton = new POVMultiButton(m_stick, 0, 0);
+        povLeftButton = new POVMultiButton(m_stick, 270, 0);
     }
 
     public double getLeftXAxis() {

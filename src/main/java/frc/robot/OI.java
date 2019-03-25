@@ -59,5 +59,10 @@ public class OI {
 
     driveController.rightJoystickButton.whileHeld(new LineUpWhileDriving());
     driveController.rightJoystickButton.whenReleased(new CancelLineupAndTurnOffLEDs());
+
+    driveController.startButton.whenPressed(new ToggleCameraMode());
+
+    driveController.povDownButton.whenPressedWith(new ResetNavX(), driveController.rightBumperButton);
+    driveController.povDownButton.whenNotPressedWith(new ResetToClosestScoringAngle(), driveController.rightBumperButton);
   }
 }

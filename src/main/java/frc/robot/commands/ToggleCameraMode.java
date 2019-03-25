@@ -7,17 +7,17 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.command.InstantCommand;
-import frc.robot.Robot;
 
 /**
  * Add your docs here.
  */
-public class ResetToClosestScoringAngle extends InstantCommand {
+public class ToggleCameraMode extends InstantCommand {
   /**
    * Add your docs here.
    */
-  public ResetToClosestScoringAngle() {
+  public ToggleCameraMode() {
     super();
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -26,8 +26,11 @@ public class ResetToClosestScoringAngle extends InstantCommand {
   // Called once when the command executes
   @Override
   protected void initialize() {
-    System.out.println("ResetToClosestScoringAngle");
-    Robot.m_driveTrain.zeroAngle = (Robot.m_driveTrain.getClosestScoringAngle() -  Robot.m_navX.getYaw()) % 180;
+    if(NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").getDouble(0) == 0) {
+      NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+    } else {
+      NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
+    }
   }
 
 }
